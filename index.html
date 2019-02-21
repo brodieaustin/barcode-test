@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8" />
+    <title>Barcode test</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+    <style>
+      html, body{
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        text-align: center;
+      }
+      body{
+        font-family: 'Lato', sans-serif;
+        background-color: #fff;
+      }
+
+      header{
+        padding: 2rem;
+      }
+
+      header > h1{
+        color: #0074A0;
+        font-size: 1.5rem;
+        margin: 0;
+      }
+
+      main{
+        max-width: 40rem;
+        margin: 4rem auto;
+      }
+
+      form{
+        width: 100%;
+      }
+
+      .form-control.inline{
+        display: flex;
+        width: 100%;
+      }
+
+      label{
+        display: block;
+        margin-bottom: 1rem;
+      }
+
+      input, button{
+        font-size: 1.125rem;
+        padding: 1rem;
+      }
+
+      input[type=text]{
+        width: 80%;
+        border: 1px solid #aaa;
+      }
+
+      .button{
+        width: 20%;
+        border: 0;
+        background-color: #0074A0;
+        color: #fff;
+        cursor: pointer;
+        transition: .2s ease opacity;
+      }
+
+      .button:hover{
+        opacity: .7;
+      }
+
+      footer{
+        position: absolute;
+        bottom: 2rem;
+        width: 100%;
+      }
+
+      .logo{
+        max-width: 10rem;
+        height: auto;
+      }
+
+      .hidden{
+        display: none;
+      }
+
+      .tools{
+        list-style: none;
+        position: absolute;
+        top: .5rem;
+        right: 2rem;
+      }
+
+      .tools li{
+        display: inline-block;
+      }
+
+      .tools li a{
+        display: block;
+        margin-left: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #a0a0a0;
+        font-size: .875rem;
+        text-decoration: none;
+      }
+
+      #barcode-container{
+        width: 80%;
+        margin: auto;
+      }
+      #barcode{
+        width: 100%;
+        margin: auto;
+      }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Barcode Test</h1>
+    </header>
+    <main class="content">
+        <form id="barcode-form">
+          <label>Enter your library card number:</label>
+
+            <div class="form-control inline">
+              <input type="text" id="barcode-input" name="barcode-input" autocomplete="off" />
+              <input type="submit" value="Go" class="button" />
+            </div>
+        </form>
+        <div id="barcode-container">
+            <div id="barcode"></div>
+        </div>
+    </main>
+    <footer role="contentinfo">
+      <img src="logo.png" class="logo">
+    </footer>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="jquery-barcode.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var bc;
+            var width;
+
+            if ($(document).width() < 500){
+              width = 1;
+            }
+            else{
+                width = 2;
+            }
+
+
+            if (localStorage.length > 0){
+                bc = localStorage['card'];
+                 $('#barcode').barcode(bc, "codabar",
+                        {
+                            barWidth: width,
+                            barHeight: 100,
+                            fontSize : 16,
+                        }
+                     );
+                     $('#barcode-form').hide();
+                     $('#barcode-container').fadeIn();
+            }
+            $('#barcode-form').submit(function(){
+                bc = $('#barcode-input').val();
+                if (bc){
+
+                    if (window['localStorage']){
+                        localStorage.setItem('card', bc);
+                    }
+                     $('#barcode').barcode(bc, "codabar",
+                        {
+                            barWidth: width,
+                            barHeight: 100,
+                            fontSize : 16,
+                        }
+                     );
+                     $(this).hide();
+                     $(this)[0].reset();
+                     $('#barcode-container').fadeIn();
+                }
+                return false;
+            });
+
+            $('#clear').click(function(){
+                $('#barcode').html('');
+                $('#barcode-form').show();
+                localStorage.clear();
+
+                return false;
+            });
+        });
+    </script>
+
+</body>
+</html>
